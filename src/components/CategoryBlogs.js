@@ -8,6 +8,11 @@ const CategoryBlogs = () => {
     const [filteredBlogs, setFilteredBlogs] = useState([]);
     const { category } = useParams();
 
+    const capitalize = (word) => {
+        const lower = word.toLowerCase();
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }
+
     useEffect(() => {
         const categoryBlogs = blogs.filter(blog => blog.blogCategory === category);
         setFilteredBlogs(categoryBlogs);
@@ -15,7 +20,7 @@ const CategoryBlogs = () => {
 
     return (
         <div className="container">
-            <h2 className="text-center myblog-title">{category.toUpperCase()} BLOGS</h2>
+            <h2 className="text-center myblog-title">{capitalize(category)} Blogs</h2>
             <div className="col-md-12">
                 <div className="row">
                     {filteredBlogs.length === 0 && `Oops! Blogs related to ${category} are not available now`}

@@ -5,8 +5,10 @@ const API_BASE_URL = "https://dev-blogs-backend.onrender.com/";
 const BlogState = (props) => {
 	const blogsInitial = []
 
+	const [blogByID, setBlogByID] = useState(null)
 	const [blogs, setBlogs] = useState(blogsInitial)
 	const [searchResults, setSearchResults] = useState([]);
+	const [userBlog, setUserBlog] = useState(blogsInitial)
 
 	// Get All Blogs
 	const getAllBlogs = async () => {
@@ -77,9 +79,6 @@ const BlogState = (props) => {
 		setBlogs(newBlogs);
 	};
 
-
-
-	const [blog, setBlog] = useState(null)
 	// Get Blog by id
 	const getBlogByID = async (id) => {
 		const response = await fetch(`${API_BASE_URL}api/blogs/${id}`, {
@@ -90,7 +89,7 @@ const BlogState = (props) => {
 		})
 
 		const data = await response.json();
-		setBlog(data)
+		setBlogByID(data)
 	}
 
 	// Get Specific user Blogs
@@ -104,7 +103,7 @@ const BlogState = (props) => {
 		})
 
 		const blogs = await response.json();
-		setBlogs(blogs)
+		setUserBlog(blogs)
 	}
 
 	const searchBlogs = async (query) => {
@@ -122,7 +121,7 @@ const BlogState = (props) => {
 	}
 
 	return (
-		<BlogContext.Provider value={{ blogs, blog, getAllBlogs, createBlog, getBlogByID, userBlogs, deleteBlog, searchResults, searchBlogs }}>
+		<BlogContext.Provider value={{ blogs, blogByID, getAllBlogs, createBlog, getBlogByID, userBlogs, deleteBlog, searchResults, searchBlogs, userBlog, setBlogByID }}>
 			{props.children}
 		</BlogContext.Provider>
 	)

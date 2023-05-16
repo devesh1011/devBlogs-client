@@ -4,34 +4,39 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AlertContext from "../context/AlertContext";
-import AuthContext from '../context/AuthContext';
+import AuthContext from "../context/AuthContext";
 
 const CreateBlog = () => {
     const { createBlog } = useContext(BlogContext);
-    const { isAuthenticated } = useContext(AuthContext);
 
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [category, setCategory] = useState('');
-    const [blogImage, setBlogImage] = useState('')
+    const [blogDetails, setBlogDetails] = useState({
+        title: "",
+        content: "",
+        category: "",
+        blogImage: ""
+    });
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        const token = localStorage.getItem('token');
+
+        if ( (token) === false) {
             navigate('/login');
         }
-    }, [isAuthenticated, navigate]);
+    }, [navigate,  ]);
 
     const { showAlert } = useContext(AlertContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        createBlog(title, content, category, blogImage);
-        setTitle("");
-        setContent("");
-        setCategory("");
-        setBlogImage("")
+        createBlog(blogDetails.title, blogDetails.content, blogDetails.category, blogDetails.blogImage);
+        setBlogDetails({
+            title: "",
+            content: "",
+            category: "",
+            blogImage: ""
+        });
 
         navigate('/')
 
@@ -48,8 +53,12 @@ const CreateBlog = () => {
                         type="text"
                         className="form-control"
                         id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={blogDetails.title}
+                        onChange={(e) => {
+                            setBlogDetails({
+                                ...blogDetails, title: e.target.value
+                            })
+                        }}
                         required
                     />
                 </div>
@@ -57,8 +66,12 @@ const CreateBlog = () => {
                     <label htmlFor="content">Content</label>
                     <ReactQuill
                         id="content"
-                        value={content}
-                        onChange={(value) => setContent(value)}
+                        value={blogDetails.content}
+                        onChange={(value) => {
+                            setBlogDetails({
+                                ...blogDetails, content: value
+                            })
+                        }}
                         theme="snow"
                         modules={{
                             toolbar: [
@@ -85,17 +98,25 @@ const CreateBlog = () => {
                         type="text"
                         className="form-control"
                         id="blogImage"
-                        value={blogImage}
+                        value={blogDetails.blogImage}
                         placeholder='Add the Image URL Here'
-                        onChange={(e) => setBlogImage(e.target.value)}
+                        onChange={(e) => {
+                            setBlogDetails({
+                                ...blogDetails, blogImage: e.target.value
+                            })
+                        }}
                     />
                 </div>
-                <div class="form-group input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupSelect01">Category</label>
+                <div className="form-group input-group mb-3">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="inputGroupSelect01">Category</label>
                     </div>
-                    <select class="custom-select" id="inputGroupSelect01" value={category}
-                        onChange={(e) => setCategory(e.target.value)}>
+                    <select className="custom-select" id="inputGroupSelect01" value={blogDetails.category}
+                        onChange={(e) => {
+                            setBlogDetails({
+                                ...blogDetails, category: e.target.value
+                            })
+                        }}>
                         <option selected>Select Blog Category</option>
                         <option value="science">Science</option>
                         <option value="business">Business</option>

@@ -7,25 +7,18 @@ import AuthContext from '../context/AuthContext';
 
 const Blogs = () => {
     const context = useContext(BlogContext);
-    const { blogs, userBlogs } = context;
-    const { isAuthenticated } = useContext(AuthContext);
+    const { userBlog, userBlogs } = context;
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login');
-        }
+        const token = localStorage.getItem('token');
 
         const userId = localStorage.getItem('userId');
         if (userId) {
             userBlogs(userId);
         }
-    }, [userBlogs, isAuthenticated, navigate]);
-
-    if (!blogs) {
-        return <div>Loading...</div>;
-    }
+    }, [userBlogs, navigate]);
 
     return (
         <div className="container">
@@ -33,9 +26,11 @@ const Blogs = () => {
                 <div className="col-md-9 myblog">
                     <h2 className="text-center myblog-title">Your Blogs</h2>
                     <div className="row">
-                        <h4 className='text-center'>{blogs.length === 0 && "Create your first blog"}</h4>
+                        <h4 className='text-center'>{userBlog.length === 0 && <div className="loader-container">
+                            <div className="spinner"></div>
+                        </div>}</h4>
                         {
-                            blogs.map((blog) => {
+                            userBlog.map((blog) => {
                                 return (
                                     <div className="col-md-6 col-lg-6">
                                         <BlogItem blog={blog} />

@@ -3,7 +3,7 @@ import AuthContext from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-    const { setEmail, setPassword, email, password, login } = useContext(AuthContext);
+    const { credentials, setCredentials, login } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,8 +20,8 @@ const Login = () => {
                         type="email"
                         className="form-control"
                         id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={credentials.email}
+                        onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                         required
                     />
                 </div>
@@ -31,8 +31,8 @@ const Login = () => {
                         type="password"
                         className="form-control"
                         id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={credentials.password}
+                        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                         required
                     />
                 </div>

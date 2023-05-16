@@ -8,20 +8,20 @@ import DOMPurify from 'dompurify';
 const SingleItem = () => {
     const { id } = useParams();
 
-    const { getBlogByID, blog } = useContext(BlogContext);
-
-    // const likeIconRef = useRef(null);
+    const { getBlogByID, blogByID } = useContext(BlogContext);
 
     useEffect(() => {
         getBlogByID(id);
         // eslint-disable-next-line
     }, [getBlogByID, id]);
 
-    if (!blog) {
-        return <div>Loading...</div>;
+    if (!blogByID) {
+        return <div className="loader-container d-flex text-center">
+            <div className="spinner"></div>
+        </div>;
     }
 
-    const blogContent = DOMPurify.sanitize(blog.content);
+    const blogContent = DOMPurify.sanitize(blogByID.content);
 
     return (
         <div className="row singleblog ">
@@ -29,12 +29,12 @@ const SingleItem = () => {
                 <article className="card mb-4">
                     <div className="text-center">
                         <div className="card-meta">
-                            <Link to="#" >{new Date(blog.createdAt.split('T')).toGMTString().split('GMT')} by {blog.author.username}</Link>
+                            <Link to="#" >{new Date(blogByID.createdAt.split('T')).toGMTString().split('GMT')} by {blogByID.author.username}</Link>
                         </div>
-                        <h1 className="card-title">{blog.title}</h1>
+                        <h1 className="card-title">{blogByID.title}</h1>
                     </div>
                     <div className="img-div text-center">
-                        <img className="blogImage" src={blog.blogTitlePic} alt="blog-img" />
+                        <img className="blogImage" src={blogByID.blogTitlePic} alt="blog-img" />
                     </div>
                     <div className="card-body singleblog-text" dangerouslySetInnerHTML={{ __html: blogContent }}>
                     </div>

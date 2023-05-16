@@ -27,7 +27,7 @@ const Sidebar = () => {
     return (
         <div className="col-md-3 ms-auto">
             <aside className="sidebar">
-                <div className="input-group">
+                <div className="input-group searchbar">
                     <div className="form-outline d-flex justify-content-center align-items-center">
                         <input id="search-focus" type="search" className="form-control" onChange={handleSearchChange} />
                         <Link onClick={handleSearch}><i className="fas fa-search fa-lg mx-2"></i></Link>

@@ -19,17 +19,15 @@ const Blogs = () => {
         setActivePage(pageNumber);
     };
 
-    if (!blogs) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div className="container">
             <div className="row">
                 <div className="col-md-9">
                     <h2 className="text-center myblog-title">All Blogs</h2>
                     <div className="row">
-                        {blogs.length === 0 && 'Oops! No Blogs available now'}
+                        {blogs.length === 0 && <div className="loader-container d-flex text-center">
+                            <div className="spinner"></div>
+                        </div>}
                         {blogs
                             .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
                             .map((blog) => {

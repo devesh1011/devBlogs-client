@@ -19,6 +19,7 @@ const BlogItem = (props) => {
             showAlert("You Blog has been deleted", "success")
         }
     }
+    
     const blogContent = DOMPurify.sanitize(blog.content);
 
     return (

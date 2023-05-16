@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import AuthContext from "./AuthContext";
 import { useNavigate } from 'react-router-dom';
 import AlertContext from "./AlertContext";
@@ -10,37 +10,13 @@ const AuthState = (props) => {
 
     const [user, setUser] = useState({});
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [username, setUsername] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState('');
+    
+    const [credentials, setCredentials] = useState({ email: "", password: "", username: ""});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [selectedFile, setSelectedFile] = useState(null);
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            setIsAuthenticated(true);
-        } else {
-            setIsAuthenticated(false);
-        }
-    }, []);
-
     const setAuth = (status) => {
         setIsAuthenticated(status);
-    };
-
-    const checkTokenValidity = async (token) => {
-        try {
-            const response = await fetch(`${API_BASE_URL}api/auth/validate-token`, {
-                headers: { Authorization: token }
-            });
-            return response.status === 200;
-        } catch (err) {
-            return false;
-        }
     };
 
     const login = async () => {
@@ -49,7 +25,7 @@ const AuthState = (props) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email: credentials.email, password: credentials.password })
 
         })
 
@@ -74,7 +50,7 @@ const AuthState = (props) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ username: credentials.username, email: credentials.email, password: credentials.password })
         })
 
         const json = await response.json();
@@ -113,8 +89,7 @@ const AuthState = (props) => {
             localStorage.removeItem('userId')
             localStorage.removeItem('username')
 
-            setEmail("")
-            setPassword("")
+            setCredentials({ email: "", password: "", username: "" })
 
             navigate("/login")
 
@@ -128,7 +103,7 @@ const AuthState = (props) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email: credentials.email }),
         });
 
         if (response.ok) {
@@ -143,7 +118,7 @@ const AuthState = (props) => {
             const response = await fetch(`${API_BASE_URL}api/auth/reset-password`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password, token }),
+                body: JSON.stringify({ password: credentials.password, token }),
             });
 
             if (response.status === 200) {
@@ -156,31 +131,8 @@ const AuthState = (props) => {
         }
     }
 
-    const updateProfilePicture = async (formData) => {
-        try {
-            const response = await fetch(`${API_BASE_URL}api/auth/updateProfilePicture`, {
-                method: 'POST',
-                headers: {
-                    "Authorization": localStorage.getItem('token'),
-                },
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setUser({ ...user, profilePicture: data.filePath });
-            } else {
-                // Handle the error, e.g., show an error message or alert
-                console.error('Error uploading profile picture:', data.message);
-            }
-        } catch (error) {
-            console.error('Error uploading profile picture:', error);
-        }
-    };
-
-    return (
-        <AuthContext.Provider value={{ isAuthenticated, setAuth, setEmail, login, setPassword, email, password, username, setUsername, signup, user, setUser, getUser, logout, forgotPassword, selectedFile, setSelectedFile, updateProfilePicture, confirmPassword, setConfirmPassword, error, setError, loading, setLoading, resetPassword, checkTokenValidity }}>
+    return (    
+        <AuthContext.Provider value={{ isAuthenticated, setAuth, login, signup, user, setUser, getUser, logout, forgotPassword, error, setError, loading, setLoading, resetPassword, credentials, setCredentials }}>
             {props.children}
         </AuthContext.Provider>
     )
